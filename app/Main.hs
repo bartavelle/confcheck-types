@@ -1,9 +1,9 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Main where
 
-import Analyzis.Types
-import Analyzis.Windows.ACE
-import Analyzis.Fiche
+import Analysis.Types
+import Analysis.Windows.ACE
+import Analysis.Fiche
 import Data.Condition
 
 import Data.Proxy

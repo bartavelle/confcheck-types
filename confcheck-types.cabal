@@ -19,12 +19,12 @@ library
   default-extensions:  OverloadedStrings
   hs-source-dirs:      src
   exposed-modules:
-    Analyzis.Windows.SID
-    Analyzis.Windows.GUID
-    Analyzis.Windows.ACE
-    Analyzis.Types
-    Analyzis.Common
-    Analyzis.Fiche
+    Analysis.Windows.SID
+    Analysis.Windows.GUID
+    Analysis.Windows.ACE
+    Analysis.Types
+    Analysis.Common
+    Analysis.Fiche
     Data.Condition
     Data.Parsers.Xml
     Data.Parsers.FastText

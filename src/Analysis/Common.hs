@@ -3,7 +3,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE DeriveFunctor #-}
 {-# LANGUAGE FlexibleContexts #-}
-module Analyzis.Common where
+module Analysis.Common where
 
 import Prelude
 import qualified Data.Text as T
@@ -12,7 +12,7 @@ import qualified Data.Text.Encoding as T
 import qualified Data.ByteString as BS
 import qualified Data.Attoparsec.Text as A
 import Control.Lens
-import Analyzis.Types
+import Analysis.Types
 import Control.Applicative
 import Data.Maybe (fromMaybe,mapMaybe)
 import qualified Data.Map.Strict as M

@@ -1,6 +1,6 @@
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE TemplateHaskell #-}
-module Analyzis.Windows.SID where
+module Analysis.Windows.SID where
 
 import Prelude hiding (print)
 import Data.Word

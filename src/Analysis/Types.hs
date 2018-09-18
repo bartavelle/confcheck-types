@@ -7,9 +7,9 @@
 {-# LANGUAGE DeriveFoldable #-}
 {-# LANGUAGE DeriveTraversable #-}
 {-# LANGUAGE FlexibleInstances #-}
-module Analyzis.Types
-    ( module Analyzis.Types
-    , module Analyzis.Windows.SID
+module Analysis.Types
+    ( module Analysis.Types
+    , module Analysis.Windows.SID
     ) where
 
 import Prelude
@@ -55,8 +55,8 @@ import qualified Text.Parser.Char as PC
 import Control.DeepSeq
 import Elm.Derive
 
-import Analyzis.Windows.SID
-import Analyzis.Windows.ACE
+import Analysis.Windows.SID
+import Analysis.Windows.ACE
 
 -- orphan instances and other hacks :(
 

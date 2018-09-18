@@ -1,5 +1,5 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
-module Analyzis.Windows.GUID where
+module Analysis.Windows.GUID where
 
 import qualified Data.UUID as UUID
 import Data.Textual

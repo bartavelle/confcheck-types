@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE DeriveGeneric #-}
-module Analyzis.Windows.ACE where
+module Analysis.Windows.ACE where
 
 import Prelude hiding (print)
 import Data.Aeson hiding (defaultOptions)
@@ -23,8 +23,8 @@ import qualified Data.Map.Strict as M
 import qualified Text.Parser.Char as P
 import qualified Text.Parser.Combinators as P
 
-import Analyzis.Windows.GUID
-import Analyzis.Windows.SID
+import Analysis.Windows.GUID
+import Analysis.Windows.SID
 
 data SecurityDescriptor = SecurityDescriptor { _sdType  :: SDType
                                              , _sdOwner :: Maybe RSID

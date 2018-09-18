@@ -5,11 +5,11 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE DeriveTraversable #-}
-module Analyzis.Fiche where
+module Analysis.Fiche where
 
 import Data.Aeson hiding (defaultOptions)
 import Data.Aeson.Types (Parser)
-import Analyzis.Types
+import Analysis.Types
 import Data.Text (Text)
 import qualified Data.Map.Strict as M
 import qualified Data.Set as S
