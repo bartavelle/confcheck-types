@@ -38,7 +38,6 @@ import Control.Monad.Identity
 import Control.Applicative
 import qualified Data.Text as T
 import qualified Data.Text.Encoding as T
-import Data.Monoid
 import qualified Data.HashMap.Strict as HM
 import qualified Data.ByteString.Lazy as BSL
 

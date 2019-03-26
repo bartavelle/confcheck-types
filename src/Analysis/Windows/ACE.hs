@@ -16,7 +16,6 @@ import Data.Text (Text, pack)
 import Control.Lens
 import Data.Tuple (swap)
 import GHC.Generics (Generic)
-import Data.Monoid
 import Elm.Derive
 import qualified Data.Set as S
 import qualified Data.Map.Strict as M

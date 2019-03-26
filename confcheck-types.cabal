@@ -1,5 +1,5 @@
 name:                confcheck-types
-version:             0.1.0.0
+version:             0.1.1
 synopsis:            Base types for the configuration checking tool.
 description:         Please see README.md
 homepage:            http://github.com/bartavelle/confcheck-types#readme
@@ -30,7 +30,7 @@ library
     Data.Parsers.FastText
     Data.Parsers.Atto
     Data.Parsers.Helpers
-  build-depends:       base >= 4.7 && < 5
+  build-depends:       base >= 4.11 && < 5
                      , attoparsec
                      , fastparser
                      , text

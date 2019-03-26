@@ -32,9 +32,11 @@ data PackageUniqInfo = PackageUniqInfo { _pckSeverity :: Severity
                                        }
                                        deriving Show
 
+instance Semigroup PackageUniqInfo where
+    PackageUniqInfo s1 d1 pv1 p1 t1 <> PackageUniqInfo s2 d2 pv2 p2 t2 = PackageUniqInfo (max s1 s2) (min d1 d2) (max pv1 pv2) (nub (p1 ++ p2)) (nub (t1 ++ t2))
+
 instance Monoid PackageUniqInfo where
     mempty = PackageUniqInfo Unknown (fromGregorian 1970 1 1) "" [] []
-    PackageUniqInfo s1 d1 pv1 p1 t1 `mappend` PackageUniqInfo s2 d2 pv2 p2 t2 = PackageUniqInfo (max s1 s2) (min d1 d2) (max pv1 pv2) (nub (p1 ++ p2)) (nub (t1 ++ t2))
 
 newtype JMap a b = JMap { getJMap :: M.Map a b }
                    deriving (Show, Eq, Ord, Functor, Foldable, Traversable)
@@ -62,9 +64,11 @@ instance Ord k => At (JMap k a) where
 type instance IxValue (JMap k a) = a
 type instance Index (JMap k a) = k
 
+instance (Ord k, Semigroup a) => Semigroup (JMap k a) where
+    JMap a <> JMap b = JMap (M.unionWith (<>) a b)
+
 instance (Ord k, Monoid a) => Monoid (JMap k a) where
     mempty = JMap mempty
-    mappend (JMap a) (JMap b) = JMap (M.unionWith mappend a b)
 
 parseTextual :: Textual a => Text -> Parser a
 parseTextual = maybe (fail "cannot decode") return . fromText

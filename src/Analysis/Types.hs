@@ -31,7 +31,6 @@ import Data.Char (isDigit, isAlpha)
 import Data.Time (Day, toGregorian, fromGregorian)
 import Control.Lens hiding ((.=))
 import Control.Applicative
-import Data.Monoid
 import Data.String
 import Data.Sequence (Seq)
 import Network.IP.Addr
@@ -123,9 +122,11 @@ instance Ord Severity where
 
 instance Serialize Severity where
 
+instance Semigroup Severity where
+    (<>) = max
+
 instance Monoid Severity where
     mempty = Unknown
-    mappend = max
 
 -- files
 data FileType = TFile
