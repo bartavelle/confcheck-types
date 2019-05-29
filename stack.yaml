@@ -1,8 +1,10 @@
 flags: {}
 packages:
  - .
-resolver: lts-13.4
+resolver: lts-13.14
 extra-deps:
   - elm-bridge-0.4.3
   - fastparser-0.3.1.2
+  - stateWriter-0.2.10
+  - withdependencies-0.2.4.3
 
