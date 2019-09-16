@@ -109,7 +109,16 @@ unixVersion =   (redhat  <$> requireTxt ["conf/etc.tar.gz", "etc/redhat-release"
             <|> (debian  <$> requireTxt ["conf/etc.tar.gz", "etc/debian_version"])
             <|> (solaris <$> requireTxt ["conf/etc.tar.gz", "/etc/passwd"])
     where
-        debian = UnixVersion Debian . fromMaybe [] . mapM text2Int . T.splitOn "." . T.strip
+        debian c = UnixVersion Debian (fromMaybe [] (numericalVersion <|> textVersion))
+          where
+            numericalVersion = mapM text2Int $ T.splitOn "." $ T.strip c
+            textVersion = case T.splitOn "/" c of
+                            ["bookworm", _] -> Just [12]
+                            ["bullseye", _] -> Just [11]
+                            ["buster", _]   -> Just [10]
+                            ["stretch", _]  -> Just [9]
+                            ["jessie", _]   -> Just [8]
+                            _               -> Nothing
         redhat c = fromMaybe  (UnixVersion RHEL []) (str2version c)
         centos c = UnixVersion CentOS $ case str2version c of
                                             Just (UnixVersion _ v) -> v
