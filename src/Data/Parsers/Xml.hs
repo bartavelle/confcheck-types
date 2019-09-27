@@ -1,3 +1,5 @@
+{-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE GADTs #-}
 module Data.Parsers.Xml
     ( Parser
     , ParserT
@@ -57,29 +59,29 @@ anyTok :: Monad m => ParserT s m (SAXEvent T.Text T.Text)
 anyTok = tok Just
 
 xmldeclaration :: Monad m => ParserT s m (T.Text, Maybe T.Text, Maybe Bool)
-xmldeclaration = tok $ \x -> case x of
-                                 XMLDeclaration a b c -> Just (a,b,c)
-                                 _ -> Nothing
+xmldeclaration = tok $ \case
+  XMLDeclaration a b c -> Just (a,b,c)
+  _ -> Nothing
 
 startelement :: Monad m => ParserT s m (T.Text, [(T.Text, T.Text)])
-startelement = tok $ \x -> case x of
-                               StartElement a b -> Just (a,b)
-                               _ -> Nothing
+startelement = tok $ \case
+  StartElement a b -> Just (a,b)
+  _ -> Nothing
 
 endelement :: Monad m => ParserT s m T.Text
-endelement = tok $ \x -> case x of
-                             EndElement a -> Just a
-                             _ -> Nothing
+endelement = tok $ \case
+  EndElement a -> Just a
+  _ -> Nothing
 
 characterdata :: Monad m => ParserT s m T.Text
-characterdata = tok $ \x -> case x of
-                             CharacterData a -> Just a
-                             _ -> Nothing
+characterdata = tok $ \case
+  CharacterData a -> Just a
+  _ -> Nothing
 
 comment :: Monad m => ParserT s m T.Text
-comment = tok $ \x -> case x of
-                          Comment a -> Just a
-                          _ -> Nothing
+comment = tok $ \case
+  Comment a -> Just a
+  _ -> Nothing
 
 anyElement :: Monad m => (T.Text -> HM.HashMap T.Text T.Text -> ParserT s m a) -> ParserT s m a
 anyElement = elementPred' (\_ _ -> True)
