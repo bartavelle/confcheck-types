@@ -1,11 +1,10 @@
-{-# LANGUAGE RankNTypes #-}
-{-# LANGUAGE BangPatterns #-}
+{-# LANGUAGE RankNTypes   #-}
 module Data.Parsers.Atto (englishMonthToInt) where
 
-import Prelude
 import qualified Data.ByteString.Char8 as BS
-import qualified Data.Text as T
-import Data.String
+import           Data.String
+import qualified Data.Text             as T
+import           Prelude
 
 englishMonthToInt :: (IsString a, Eq a) => a -> Maybe Int
 {-# SPECIALIZE  englishMonthToInt :: T.Text -> Maybe Int #-}
@@ -22,5 +21,5 @@ englishMonthToInt "Sep" = Just 9
 englishMonthToInt "Oct" = Just 10
 englishMonthToInt "Nov" = Just 11
 englishMonthToInt "Dec" = Just 12
-englishMonthToInt _ = Nothing
+englishMonthToInt _     = Nothing
 

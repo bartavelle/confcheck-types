@@ -1,22 +1,22 @@
-{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE DeriveGeneric   #-}
 {-# LANGUAGE TemplateHaskell #-}
 module Analysis.Windows.SID where
 
-import Prelude hiding (print)
-import Data.Word
-import Data.List
-import Data.Aeson
-import Data.Textual
-import Control.Monad
-import Control.Applicative
-import Data.Char
-import Data.Text (Text)
-import Control.Lens
-import Data.Hashable
-import GHC.Generics (Generic)
-import qualified Data.Map.Strict as M
+import           Control.Applicative
+import           Control.Lens
+import           Control.Monad
+import           Data.Aeson
+import           Data.Char
+import           Data.Hashable
+import           Data.List
+import qualified Data.Map.Strict         as M
+import           Data.Text               (Text)
+import           Data.Textual
+import           Data.Word
+import           GHC.Generics            (Generic)
+import           Prelude                 hiding (print)
 
-import qualified Text.Parser.Char as P
+import qualified Text.Parser.Char        as P
 import qualified Text.Parser.Combinators as P
 
 data SID = SID { _sidRevision  :: !Word32

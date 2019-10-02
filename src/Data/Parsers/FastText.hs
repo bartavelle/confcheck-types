@@ -1,20 +1,20 @@
+{-# LANGUAGE BangPatterns               #-}
+{-# LANGUAGE DeriveFunctor              #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
-{-# LANGUAGE BangPatterns #-}
-{-# LANGUAGE DeriveFunctor #-}
-{-# LANGUAGE RankNTypes #-}
+{-# LANGUAGE RankNTypes                 #-}
 module Data.Parsers.FastText where
 
-import qualified Data.Text as T
-import Data.Text (Text)
-import Data.AffineSpace ((.-^))
-import Control.Applicative
-import Control.Lens
-import Data.Thyme
-import Data.Char
+import           Control.Applicative
+import           Control.Lens
+import           Data.AffineSpace        ((.-^))
+import           Data.Char
+import           Data.Text               (Text)
+import qualified Data.Text               as T
+import           Data.Thyme
 
-import qualified Text.Parser.Char as P
+import qualified Text.Parser.Char        as P
 import qualified Text.Parser.Combinators as P
-import qualified Text.Parser.Token as P
+import qualified Text.Parser.Token       as P
 
 newtype Parser a = Parser { runParser :: forall r. Text -> r -> (Text -> a -> r) -> r }
                    deriving Functor
@@ -50,11 +50,11 @@ instance P.Parsing Parser where
 instance P.CharParsing Parser where
     string s = Parser $ \input failure success -> case T.stripPrefix t input of
                                                       Nothing -> failure
-                                                      Just r -> success r s
+                                                      Just r  -> success r s
         where t = T.pack s
     text t = Parser $ \input failure success -> case T.stripPrefix t input of
                                                     Nothing -> failure
-                                                    Just r -> success r t
+                                                    Just r  -> success r t
     satisfy p = Parser pr
         where
             pr input failure success | T.null input = failure
@@ -97,7 +97,7 @@ scientific = finalize . T.foldl' step (0,0) <$> takeWhile1 (\n -> isDigit n || n
 takeWhile1 :: (Char -> Bool) -> Parser Text
 takeWhile1 prd = Parser $ \s failure success -> case T.span prd s of
                                                     ("", _) -> failure
-                                                    (a,b) -> success b a
+                                                    (a,b)   -> success b a
 {-# INLINE takeWhile1 #-}
 
 parseOnly :: Parser a -> Text -> Maybe a
@@ -128,8 +128,8 @@ timestamp = do
     !tz <- takeWhile1 isUpper
     return $! case tz of
                   "CEST" -> tm .-^ fromSeconds (7200 :: Int)
-                  "CET" -> tm .-^ fromSeconds (3600 :: Int)
-                  _ -> tm
+                  "CET"  -> tm .-^ fromSeconds (3600 :: Int)
+                  _      -> tm
 
 parseTimestamp :: Text -> Maybe UTCTime
 parseTimestamp txt | "%++" `T.isPrefixOf` txt = Just $ view (from utcTime) $ UTCTime (YearMonthDay 2016 03 12 ^. from gregorian) (fromSeconds (0 :: Int))

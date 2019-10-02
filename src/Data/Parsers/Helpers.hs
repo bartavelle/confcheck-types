@@ -1,8 +1,8 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Data.Parsers.Helpers where
 
-import Data.String
-import Control.Applicative
+import           Control.Applicative
+import           Data.String
 
 englishMonth :: (Alternative m, IsString a, Eq a) => a -> m Int
 englishMonth m = case m of
@@ -18,4 +18,4 @@ englishMonth m = case m of
                      "Oct" -> pure 10
                      "Nov" -> pure 11
                      "Dec" -> pure 12
-                     _ -> empty
+                     _     -> empty

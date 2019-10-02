@@ -1,28 +1,28 @@
-{-# LANGUAGE FlexibleInstances #-}
-{-# LANGUAGE TemplateHaskell #-}
-{-# LANGUAGE TupleSections #-}
-{-# LANGUAGE TypeFamilies #-}
-{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE DeriveTraversable          #-}
+{-# LANGUAGE FlexibleInstances          #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
-{-# LANGUAGE DeriveTraversable #-}
+{-# LANGUAGE MultiParamTypeClasses      #-}
+{-# LANGUAGE TemplateHaskell            #-}
+{-# LANGUAGE TupleSections              #-}
+{-# LANGUAGE TypeFamilies               #-}
 module Analysis.Fiche where
 
-import Data.Aeson hiding (defaultOptions)
-import Data.Aeson.Types (Parser)
-import Analysis.Types
-import Data.Text (Text)
-import qualified Data.Map.Strict as M
-import qualified Data.Set as S
+import           Analysis.Types
+import           Control.Arrow       ((***))
+import           Control.Lens
+import           Data.Aeson          hiding (defaultOptions)
+import           Data.Aeson.Types    (Parser)
+import           Data.Char           (toLower)
 import qualified Data.HashMap.Strict as HM
-import Data.Time (Day(..), fromGregorian)
-import qualified Data.Text as T
-import Data.List (nub)
-import Data.Char (toLower)
-import Data.Textual
-import Control.Arrow ((***))
-import Control.Lens
-import Elm.Derive
-import Data.Word (Word16)
+import           Data.List           (nub)
+import qualified Data.Map.Strict     as M
+import qualified Data.Set            as S
+import           Data.Text           (Text)
+import qualified Data.Text           as T
+import           Data.Textual
+import           Data.Time           (Day (..), fromGregorian)
+import           Data.Word           (Word16)
+import           Elm.Derive
 
 data PackageUniqInfo = PackageUniqInfo { _pckSeverity :: Severity
                                        , _pckDay      :: Day

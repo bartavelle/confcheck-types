@@ -1,5 +1,5 @@
+{-# LANGUAGE GADTs      #-}
 {-# LANGUAGE LambdaCase #-}
-{-# LANGUAGE GADTs #-}
 module Data.Parsers.Xml
     ( Parser
     , ParserT
@@ -31,17 +31,17 @@ module Data.Parsers.Xml
     )
 where
 
-import Prelude
-import Text.XML.Expat.SAX as S
-import Text.Parsec.String ()
-import qualified Text.Parsec.Prim as P
-import qualified Text.Parsec.Pos as P
-import Control.Monad.Identity
-import Control.Applicative
-import qualified Data.Text as T
-import qualified Data.Text.Encoding as T
-import qualified Data.HashMap.Strict as HM
-import qualified Data.ByteString.Lazy as BSL
+import           Control.Applicative
+import           Control.Monad.Identity
+import qualified Data.ByteString.Lazy   as BSL
+import qualified Data.HashMap.Strict    as HM
+import qualified Data.Text              as T
+import qualified Data.Text.Encoding     as T
+import           Prelude
+import qualified Text.Parsec.Pos        as P
+import qualified Text.Parsec.Prim       as P
+import           Text.Parsec.String     ()
+import           Text.XML.Expat.SAX     as S
 
 import qualified ByteString.Parser.Fast as PF
 
@@ -89,8 +89,8 @@ anyElement = elementPred' (\_ _ -> True)
 prefixedName :: T.Text -> (Maybe T.Text, T.Text)
 prefixedName fn =
     case T.splitOn ":" fn of
-      [] -> (Nothing, fn)
-      [_] -> (Nothing, fn)
+      []     -> (Nothing, fn)
+      [_]    -> (Nothing, fn)
       (x:xs) -> (Just x, T.intercalate ":" xs)
 
 elementPred :: Monad m => (Maybe T.Text -> T.Text -> Bool) -> (HM.HashMap T.Text T.Text -> ParserT s m a) -> ParserT s m a

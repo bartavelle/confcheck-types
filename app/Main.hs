@@ -1,14 +1,14 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Main where
 
-import Analysis.Types
-import Analysis.Windows.ACE
-import Analysis.Fiche
-import Data.Condition
+import           Analysis.Fiche
+import           Analysis.Types
+import           Analysis.Windows.ACE
+import           Data.Condition
 
-import Data.Proxy
-import Elm.Module
-import qualified Data.Text as T
+import           Data.Proxy
+import qualified Data.Text            as T
+import           Elm.Module
 
 fixes :: String -> String
 fixes = T.unpack . fixJMap . T.pack

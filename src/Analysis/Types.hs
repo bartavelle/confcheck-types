@@ -1,61 +1,61 @@
 {-# OPTIONS_GHC -fno-warn-orphans #-}
-{-# LANGUAGE TemplateHaskell #-}
-{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE DeriveFoldable             #-}
+{-# LANGUAGE DeriveFunctor              #-}
+{-# LANGUAGE DeriveGeneric              #-}
+{-# LANGUAGE DeriveTraversable          #-}
+{-# LANGUAGE FlexibleInstances          #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
-{-# LANGUAGE RankNTypes #-}
-{-# LANGUAGE DeriveFunctor #-}
-{-# LANGUAGE DeriveFoldable #-}
-{-# LANGUAGE DeriveTraversable #-}
-{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE RankNTypes                 #-}
+{-# LANGUAGE TemplateHaskell            #-}
 module Analysis.Types
     ( module Analysis.Types
     , module Analysis.Windows.SID
     ) where
 
-import Prelude
-import Data.Text (Text)
-import qualified Data.Map.Strict as M
-import qualified Data.HashMap.Strict as HM
-import qualified Data.Set as S
-import qualified Data.Sequence as Seq
-import qualified Data.Text as T
-import qualified Data.Text.Encoding as T
-import qualified Data.Foldable as F
-import Data.Set (Set)
-import Data.Aeson
-import Data.Aeson.Types
-import qualified Data.Serialize as S
-import Data.Serialize (Serialize(..))
-import GHC.Generics hiding (to)
-import Data.Char (isDigit, isAlpha)
-import Data.Time (Day, toGregorian, fromGregorian)
-import Control.Lens hiding ((.=))
-import Control.Applicative
-import Data.String
-import Data.Sequence (Seq)
-import Network.IP.Addr
-import qualified Data.Aeson.Types as A
-import Data.Attoparsec.Text (parseOnly)
-import qualified Text.Printer as P
-import Data.Bits
-import Data.Bits.Lens
-import qualified Data.ByteString as BS
-import Data.Condition
-import Control.Comonad
-import Data.Word
-import Data.Maybe (mapMaybe)
-import Data.Vector (Vector)
-import qualified Data.Thyme as Y
-import Data.Thyme.Format.Aeson()
-import Text.Printf
-import Data.List (intercalate)
-import Data.Textual
-import qualified Text.Parser.Char as PC
-import Control.DeepSeq
-import Elm.Derive
+import           Control.Applicative
+import           Control.Comonad
+import           Control.DeepSeq
+import           Control.Lens            hiding ((.=))
+import           Data.Aeson
+import           Data.Aeson.Types
+import qualified Data.Aeson.Types        as A
+import           Data.Attoparsec.Text    (parseOnly)
+import           Data.Bits
+import           Data.Bits.Lens
+import qualified Data.ByteString         as BS
+import           Data.Char               (isAlpha, isDigit)
+import           Data.Condition
+import qualified Data.Foldable           as F
+import qualified Data.HashMap.Strict     as HM
+import           Data.List               (intercalate)
+import qualified Data.Map.Strict         as M
+import           Data.Maybe              (mapMaybe)
+import           Data.Sequence           (Seq)
+import qualified Data.Sequence           as Seq
+import           Data.Serialize          (Serialize (..))
+import qualified Data.Serialize          as S
+import           Data.Set                (Set)
+import qualified Data.Set                as S
+import           Data.String
+import           Data.Text               (Text)
+import qualified Data.Text               as T
+import qualified Data.Text.Encoding      as T
+import           Data.Textual
+import qualified Data.Thyme              as Y
+import           Data.Thyme.Format.Aeson ()
+import           Data.Time               (Day, fromGregorian, toGregorian)
+import           Data.Vector             (Vector)
+import           Data.Word
+import           Elm.Derive
+import           GHC.Generics            hiding (to)
+import           Network.IP.Addr
+import           Prelude
+import qualified Text.Parser.Char        as PC
+import qualified Text.Printer            as P
+import           Text.Printf
 
-import Analysis.Windows.SID
-import Analysis.Windows.ACE
+import           Analysis.Windows.ACE
+import           Analysis.Windows.SID
 
 -- orphan instances and other hacks :(
 
@@ -70,11 +70,11 @@ instance Serialize Text where
 safeBS2Text :: BS.ByteString -> Text
 safeBS2Text t = case T.decodeUtf8' t of
                     Right v -> v
-                    Left _ -> T.decodeLatin1 t
+                    Left _  -> T.decodeLatin1 t
 
 instance FromJSON BS.ByteString where
     parseJSON (String s) = pure $ T.encodeUtf8 s
-    parseJSON _ = fail "Could not parse ByteString"
+    parseJSON _          = fail "Could not parse ByteString"
 
 instance ToJSON BS.ByteString where
     toJSON b = String (safeBS2Text b)
@@ -118,7 +118,7 @@ fromCVSS x | x < 0 = Unknown
 instance Ord Severity where
     compare None Unknown = LT
     compare Unknown None = GT
-    compare a b = compare (tocvss a) (tocvss b)
+    compare a b          = compare (tocvss a) (tocvss b)
 
 instance Serialize Severity where
 
@@ -183,8 +183,8 @@ data UnixUser = UnixUser { _uupwd    :: PasswdEntry
                          , _uurhosts :: [Rhost]
                          } deriving (Show, Eq, Generic)
 
-data WinGroup = WinGroup { _wingroupname      :: Text
-                         , _wingroupsid       :: SID
+data WinGroup = WinGroup { _wingroupname     :: Text
+                         , _wingroupsid      :: SID
                          , _wingroupcomments :: Maybe Text
                          , _wingroupmembers  :: [(Text, SID)]
                          } deriving (Show, Eq, Generic)
@@ -254,13 +254,13 @@ data WinUser = WinUser { _winusername :: Text
 dummyUser :: Text -> UnixUser
 dummyUser n = UnixUser (PasswdEntry n "" 0 0 "" "" "") Nothing Nothing [] mempty mempty
 
-data PasswdEntry = PasswdEntry { _pwdUsername   :: Text
-                               , _pwdPass       :: Text
-                               , _pwdUid        :: Int
-                               , _pwdGid        :: Int
-                               , _pwdGecos      :: Text
-                               , _pwdHome       :: Text
-                               , _pwdShell      :: Text
+data PasswdEntry = PasswdEntry { _pwdUsername :: Text
+                               , _pwdPass     :: Text
+                               , _pwdUid      :: Int
+                               , _pwdGid      :: Int
+                               , _pwdGecos    :: Text
+                               , _pwdHome     :: Text
+                               , _pwdShell    :: Text
                                } deriving (Show, Eq, Generic)
 
 data ShadowEntry = ShadowEntry { _shadowUsername             :: Text
@@ -292,13 +292,13 @@ data VersionChunk = VNum Int
                   deriving (Show, Eq, Generic)
 
 instance ToJSON VersionChunk where
-    toJSON (VNum x) = toJSON x
+    toJSON (VNum x)    = toJSON x
     toJSON (VLetter x) = toJSON x
 
 instance FromJSON VersionChunk where
     parseJSON (String x) = return $ VLetter (T.unpack x)
     parseJSON (Number x) = return $ VNum (truncate x)
-    parseJSON x = typeMismatch "VersionChunk" x
+    parseJSON x          = typeMismatch "VersionChunk" x
 
 instance S.Serialize VersionChunk where
 
@@ -309,7 +309,7 @@ instance Ord VersionChunk where
     compare (VNum _)    (VLetter _) = GT
 
 data RPMVersion = RPMVersion { getRPMVersion :: [VersionChunk]
-                             , getRPMString :: String }
+                             , getRPMString  :: String }
                    deriving (Show, Eq, Ord, Generic)
 
 instance S.Serialize RPMVersion where
@@ -320,9 +320,9 @@ instance IsString RPMVersion where
 parseRPMVersion :: String -> RPMVersion
 parseRPMVersion v = RPMVersion (parseUndef (breakEl v)) v
     where
-        breakEl [] = []
+        breakEl []                    = []
         breakEl ('.' : 'e' : 'l' : _) = []
-        breakEl (x:xs) = x : breakEl xs
+        breakEl (x:xs)                = x : breakEl xs
         parseUndef [] = []
         parseUndef (x:xs) | isDigit x = parseDigits [x] xs
                           | isAlpha x = parseAlpha [x] xs
@@ -358,7 +358,7 @@ data SoftwarePackage = Package { _packageName    :: Text
                                , _packageType    :: PType
                                } deriving (Show, Eq, Ord, Generic)
 
-data SolarisPatch = SolarisPatch { _solPatchId :: Int
+data SolarisPatch = SolarisPatch { _solPatchId  :: Int
                                  , _solPatchRev :: Int
                                  } deriving (Show, Eq, Ord, Generic)
 
@@ -433,7 +433,7 @@ data IPProto = TCP { _locIP    :: IP
                    }
                    deriving (Show, Eq, Generic)
 
-data Connection = IP { _ipproto :: IPProto
+data Connection = IP { _ipproto  :: IPProto
                      , _proginfo ::  Maybe (Int, Text)
                      }
                 deriving (Show, Eq, Generic)
@@ -607,8 +607,8 @@ instance Ord VulnType where
     compare a b = compare (td b) (td a)
         where
             td (OutdatedPackage _ _ _ d _) = d
-            td (MissingPatch _ d _) = d
-            td _ = fromGregorian 1970 1 1
+            td (MissingPatch _ d _)        = d
+            td _                           = fromGregorian 1970 1 1
 
 fromJsonTextual :: Textual a => A.Value -> A.Parser a
 fromJsonTextual = withText "string" $ \x -> case parseOnly textual x of
@@ -628,7 +628,7 @@ instance ToJSON (NetAddr IP6)   where toJSON = String . toText
 
 instance FromJSON InetPort where
     parseJSON (Number n) = pure (fromIntegral (truncate n :: Int))
-    parseJSON _ = fail "Could not parse port number"
+    parseJSON _          = fail "Could not parse port number"
 
 instance ToJSON InetPort where
     toJSON = Number . fromIntegral
@@ -711,15 +711,15 @@ data VulnGroup = GErrors
 _VulnGroup :: Prism' Text VulnGroup
 _VulnGroup = prism' vg2txt parsevg
     where
-        vg2txt GMisc         = "misc"
-        vg2txt GFS           = "filesystem"
-        vg2txt GErrors       = "errors"
-        vg2txt GPackages     = "packages"
-        vg2txt GAuthWin      = "winauth"
-        vg2txt GAuthUnix     = "unixauth"
-        vg2txt GInfo         = "info"
-        vg2txt GCron         = "cron"
-        vg2txt GNet          = "network"
+        vg2txt GMisc     = "misc"
+        vg2txt GFS       = "filesystem"
+        vg2txt GErrors   = "errors"
+        vg2txt GPackages = "packages"
+        vg2txt GAuthWin  = "winauth"
+        vg2txt GAuthUnix = "unixauth"
+        vg2txt GInfo     = "info"
+        vg2txt GCron     = "cron"
+        vg2txt GNet      = "network"
         parsevg "errors"     = Just GErrors
         parsevg "packages"   = Just GPackages
         parsevg "winauth"    = Just GAuthWin

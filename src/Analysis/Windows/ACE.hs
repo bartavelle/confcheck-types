@@ -1,29 +1,29 @@
+{-# LANGUAGE DeriveGeneric     #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE TemplateHaskell #-}
-{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE TemplateHaskell   #-}
 module Analysis.Windows.ACE where
 
-import Prelude hiding (print)
-import Data.Aeson hiding (defaultOptions)
-import Data.Word
-import Data.Textual
-import Data.Textual.Integral
-import Text.Printer(text)
-import Text.Printer.Integral (nnLowHex)
-import Control.Monad
-import Control.Applicative
-import Data.Text (Text, pack)
-import Control.Lens
-import Data.Tuple (swap)
-import GHC.Generics (Generic)
-import Elm.Derive
-import qualified Data.Set as S
-import qualified Data.Map.Strict as M
-import qualified Text.Parser.Char as P
+import           Control.Applicative
+import           Control.Lens
+import           Control.Monad
+import           Data.Aeson              hiding (defaultOptions)
+import qualified Data.Map.Strict         as M
+import qualified Data.Set                as S
+import           Data.Text               (Text, pack)
+import           Data.Textual
+import           Data.Textual.Integral
+import           Data.Tuple              (swap)
+import           Data.Word
+import           Elm.Derive
+import           GHC.Generics            (Generic)
+import           Prelude                 hiding (print)
+import qualified Text.Parser.Char        as P
 import qualified Text.Parser.Combinators as P
+import           Text.Printer            (text)
+import           Text.Printer.Integral   (nnLowHex)
 
-import Analysis.Windows.GUID
-import Analysis.Windows.SID
+import           Analysis.Windows.GUID
+import           Analysis.Windows.SID
 
 data SecurityDescriptor = SecurityDescriptor { _sdType  :: SDType
                                              , _sdOwner :: Maybe RSID
@@ -309,7 +309,7 @@ instance Printable RSID where
     print rs = maybe df text (M.lookup rs textRSID)
         where
             df = case rs of
-                     RSID s -> print s
+                     RSID s           -> print s
                      DomainRelative x -> "S-1-DOMAIN-" <> print x
 
 instance Show RSID where
@@ -322,7 +322,7 @@ instance Textual RSID where
                 pair <- replicateM 2 P.upper
                 case M.lookup (pack pair) twoLetterRSID of
                     Just rsid -> return rsid
-                    Nothing -> P.unexpected pair
+                    Nothing   -> P.unexpected pair
 
 instance ToJSON RSID where
     toJSON = String . toText
@@ -428,7 +428,7 @@ resolveRSID :: SID -- ^ domain SID
 resolveRSID s rsid =
     case rsid of
         DomainRelative r -> s & sidRIDs %~ (++ [r])
-        RSID sid -> sid
+        RSID sid         -> sid
 
 knownSIDMap :: SID -> M.Map SID Text
 knownSIDMap s = M.fromList $ do

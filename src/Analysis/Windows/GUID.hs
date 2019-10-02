@@ -1,14 +1,14 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 module Analysis.Windows.GUID where
 
-import qualified Data.UUID as UUID
-import Data.Textual
-import Text.Printer (text)
-import Control.Applicative
-import Data.Char
-import Data.Hashable
+import           Control.Applicative
+import           Data.Char
+import           Data.Hashable
+import           Data.Textual
+import qualified Data.UUID           as UUID
+import           Text.Printer        (text)
 
-import qualified Text.Parser.Char as P
+import qualified Text.Parser.Char    as P
 
 newtype GUID = GUID { _getGUID :: UUID.UUID }
                deriving (Eq, Ord, Hashable)

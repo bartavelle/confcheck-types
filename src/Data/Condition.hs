@@ -1,18 +1,18 @@
-{-# LANGUAGE DeriveFunctor #-}
-{-# LANGUAGE DeriveFoldable #-}
+{-# LANGUAGE DeriveFoldable    #-}
+{-# LANGUAGE DeriveFunctor     #-}
+{-# LANGUAGE DeriveGeneric     #-}
 {-# LANGUAGE DeriveTraversable #-}
-{-# LANGUAGE DeriveGeneric #-}
-{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TemplateHaskell   #-}
 module Data.Condition where
 
-import Prelude
-import Elm.Derive
-import qualified Data.Foldable as F
-import Data.Maybe (mapMaybe)
-import Data.List (nub)
-import GHC.Generics
-import Data.Serialize (Serialize(..))
-import Control.Lens
+import           Control.Lens
+import qualified Data.Foldable  as F
+import           Data.List      (nub)
+import           Data.Maybe     (mapMaybe)
+import           Data.Serialize (Serialize (..))
+import           Elm.Derive
+import           GHC.Generics
+import           Prelude
 
 data Condition a = Pure a
                  | Always Bool
@@ -38,7 +38,7 @@ matchingConditions _ (Always False) = Nothing
 matchingConditions f (Pure a) = return <$> f a
 matchingConditions f (Not c) = case matchingConditions f c of
                                    Nothing -> Just []
-                                   _ -> Nothing
+                                   _       -> Nothing
 matchingConditions f (And cns) = mconcat <$> Prelude.mapM (matchingConditions f) cns
 matchingConditions f (Or cns) = case mapMaybe (matchingConditions f) cns of
                                     [] -> Nothing
@@ -48,7 +48,7 @@ matchingConditions f (Or cns) = case mapMaybe (matchingConditions f) cns of
 simplifyCond1 :: Eq a => Condition a -> Condition a
 simplifyCond1 (Not n) = case sn of
                             Always x -> Always (not x)
-                            _ ->  Not sn
+                            _        ->  Not sn
     where
         sn = simplifyCond1 n
 simplifyCond1 (And [x]) = simplifyCond1 x
@@ -69,17 +69,17 @@ simplifyCond1 (Pure x) = Pure x
 simplifyCond1 (Always x) = Always x
 
 collapseCondition :: Condition (Condition x) -> Condition x
-collapseCondition (Pure x) = x
+collapseCondition (Pure x)   = x
 collapseCondition (Always x) = Always x
-collapseCondition (Not x) = Not (collapseCondition x)
-collapseCondition (And xs) = And (map collapseCondition xs)
-collapseCondition (Or xs) = Or (map collapseCondition xs)
+collapseCondition (Not x)    = Not (collapseCondition x)
+collapseCondition (And xs)   = And (map collapseCondition xs)
+collapseCondition (Or xs)    = Or (map collapseCondition xs)
 
 analyzeOrCondList :: Eq a => [Condition a] -> [Condition a]
 analyzeOrCondList lst = nub $ concatMap filterAnd lst
     where
         filterAnd (And xs) = case filter (`notElem` singleset) xs of
-                                 [] -> []
+                                 []  -> []
                                  [x] -> [x]
                                  xs' -> [And xs']
         filterAnd (Or xs) = xs

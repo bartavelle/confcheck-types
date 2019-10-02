@@ -1,29 +1,29 @@
-{-# LANGUAGE Rank2Types #-}
-{-# LANGUAGE GADTs #-}
+{-# LANGUAGE DeriveFunctor     #-}
+{-# LANGUAGE FlexibleContexts  #-}
+{-# LANGUAGE GADTs             #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE DeriveFunctor #-}
-{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE Rank2Types        #-}
 module Analysis.Common where
 
-import Prelude
-import qualified Data.Text as T
-import qualified Data.Text.Read as T
-import qualified Data.Text.Encoding as T
-import qualified Data.ByteString as BS
-import qualified Data.Attoparsec.Text as A
-import Control.Lens
-import Analysis.Types
-import Control.Applicative
-import Data.Maybe (fromMaybe,mapMaybe)
-import qualified Data.Map.Strict as M
-import qualified Data.Sequence as Seq
-import Control.Concurrent
-import Control.Monad
-import Control.Monad.RSS.Strict
-import Control.Monad.Trans.Except
-import Data.List (isPrefixOf,isSuffixOf,isInfixOf)
+import           Analysis.Types
+import           Control.Applicative
+import           Control.Concurrent
+import           Control.Lens
+import           Control.Monad
+import           Control.Monad.RSS.Strict
+import           Control.Monad.Trans.Except
+import qualified Data.Attoparsec.Text       as A
+import qualified Data.ByteString            as BS
+import           Data.List                  (isInfixOf, isPrefixOf, isSuffixOf)
+import qualified Data.Map.Strict            as M
+import           Data.Maybe                 (fromMaybe, mapMaybe)
+import qualified Data.Sequence              as Seq
+import qualified Data.Text                  as T
+import qualified Data.Text.Encoding         as T
+import qualified Data.Text.Read             as T
+import           Prelude
 
-import Control.Dependency
+import           Control.Dependency
 
 type Analyzer a = Require [T.Text] BS.ByteString a
 
@@ -122,12 +122,12 @@ unixVersion =   (redhat  <$> requireTxt ["conf/etc.tar.gz", "etc/redhat-release"
         redhat c = fromMaybe  (UnixVersion RHEL []) (str2version c)
         centos c = UnixVersion CentOS $ case str2version c of
                                             Just (UnixVersion _ v) -> v
-                                            Nothing -> []
+                                            Nothing                -> []
         suse x = fromMaybe (UnixVersion SuSE []) (suseversion x <|> str2version x)
         solaris = const (UnixVersion SunOS [])
         findKeys l = case map T.strip (T.splitOn "=" l) of
                          [t, n] -> Just (t, n)
-                         _ -> Nothing
+                         _      -> Nothing
         lsb :: T.Text -> UnixVersion
         lsb = createVersion . M.fromList . mapMaybe findKeys . T.lines
           where
@@ -171,7 +171,7 @@ failVuln = throwE
 runFailAnalyzer :: FailAnalyzer () -> PostAnalyzer ()
 runFailAnalyzer c = runExceptT c >>= \r -> case r of
                                                Right () -> return ()
-                                               Left rr -> tellVuln rr
+                                               Left rr  -> tellVuln rr
 
 text2Int :: T.Text -> Maybe Int
 text2Int = text2Integral
@@ -179,7 +179,7 @@ text2Int = text2Integral
 text2Integral :: Integral a => T.Text -> Maybe a
 text2Integral t = case T.signed T.decimal t of
                       Right (x, "") -> Just x
-                      _ -> Nothing
+                      _             -> Nothing
 
 lineAnalyzer :: T.Text -> (T.Text -> Either String ConfigInfo) -> Analyzer (Seq.Seq ConfigInfo)
 lineAnalyzer source linemanager = Seq.fromList . map run . T.lines <$> requireTxt [source]
