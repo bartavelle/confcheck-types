@@ -78,6 +78,19 @@ characterdata = tok $ \case
   CharacterData a -> Just a
   _ -> Nothing
 
+startcdata :: Monad m => ParserT s m ()
+startcdata = tok $ \case
+  StartCData -> Just ()
+  _ -> Nothing
+
+endcdata :: Monad m => ParserT s m ()
+endcdata = tok $ \case
+  EndCData -> Just ()
+  _ -> Nothing
+
+cdata :: Monad m => ParserT s m T.Text
+cdata = startcdata *> fmap mconcat (many characterdata) <* endcdata
+
 comment :: Monad m => ParserT s m T.Text
 comment = tok $ \case
   Comment a -> Just a
@@ -155,7 +168,7 @@ getTextFrom :: Monad m => T.Text -> ParserT s m T.Text
 getTextFrom n = element_ n (mconcat <$> some characterdata)
 
 getTextFrom0 :: Monad m => T.Text -> ParserT s m T.Text
-getTextFrom0 n = element_ n (mconcat <$> many characterdata)
+getTextFrom0 n = element_ n (mconcat <$> many (characterdata <|> cdata))
 
 parseTextFrom :: Monad m => PF.Parser a -> T.Text -> ParserT s m a
 parseTextFrom prs tag = do
