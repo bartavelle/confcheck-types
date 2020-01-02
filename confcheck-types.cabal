@@ -23,6 +23,19 @@ library
     Analysis.Windows.GUID
     Analysis.Windows.ACE
     Analysis.Types
+    Analysis.Types.ConfigInfo
+    Analysis.Types.Cron
+    Analysis.Types.File
+    Analysis.Types.Helpers
+    Analysis.Types.Negatable
+    Analysis.Types.Network
+    Analysis.Types.Package
+    Analysis.Types.Rhost
+    Analysis.Types.Sudo
+    Analysis.Types.Unix
+    Analysis.Types.UnixUsers
+    Analysis.Types.Vulnerability
+    Analysis.Types.Windows
     Analysis.Common
     Analysis.Fiche
     Data.Condition

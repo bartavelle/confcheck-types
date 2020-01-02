@@ -3,7 +3,6 @@ module Main where
 
 import           Analysis.Fiche
 import           Analysis.Types
-import           Analysis.Windows.ACE
 import           Data.Condition
 
 import           Data.Proxy
