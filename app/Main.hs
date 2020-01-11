@@ -66,5 +66,9 @@ main = putStrLn $ unlines
         , DefineElm (Proxy :: Proxy RegistryValue)
         , DefineElm (Proxy :: Proxy WinLogonInfo)
         , DefineElm (Proxy :: Proxy SecurityDescriptor)
+        , DefineElm (Proxy :: Proxy (Multiple a))
+        , DefineElm (Proxy :: Proxy OutdatedPackage)
+        , DefineElm (Proxy :: Proxy MissingPatch)
+        , DefineElm (Proxy :: Proxy WrongSysctl)
         ]
     ]
