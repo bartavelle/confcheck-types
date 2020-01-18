@@ -131,6 +131,7 @@ data FicheInfo
   , _ficheOldestMissingPatch :: Maybe Day
   , _ficheAllVulns           :: [Vulnerability]
   , _ficheApplications       :: [FicheApplication]
+  , _ficheHostname           :: Maybe Text
   } deriving (Show)
 
 $(deriveBoth defaultOptions{ fieldLabelModifier = map toLower . drop 6} ''FicheInfo)
