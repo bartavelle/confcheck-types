@@ -53,7 +53,7 @@ library
                      , comonad
                      , containers
                      , unordered-containers
-                     , withdependencies
+                     , withdependencies >= 0.3.0
                      , stateWriter
                      , aeson
                      , transformers
