@@ -75,7 +75,7 @@ filterTxt :: ([T.Text] -> Bool) -> Analyzer ([T.Text], T.Text)
 filterTxt = fmap (_2 %~ safeBS2Text) . requireFilter
 
 requireTxt :: [T.Text] -> Analyzer T.Text
-requireTxt = fmap (safeBS2Text) . require
+requireTxt = fmap safeBS2Text . require
 
 str2version :: T.Text -> Maybe UnixVersion
 str2version "Red Hat Enterprise Linux 3" = Just (UnixVersion RHEL [3])
