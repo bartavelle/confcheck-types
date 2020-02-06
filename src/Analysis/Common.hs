@@ -21,7 +21,6 @@ import qualified Data.Sequence              as Seq
 import qualified Data.Text                  as T
 import qualified Data.Text.Encoding         as T
 import qualified Data.Text.Read             as T
-import           Prelude
 
 import           Control.Dependency
 
@@ -90,6 +89,7 @@ str2version x | "sles10-sp4" `T.isPrefixOf` x = Just (UnixVersion SuSE [10,4])
               | "sles11-sp2" `T.isPrefixOf` x = Just (UnixVersion SuSE [11,2])
               | "sles11-sp1" `T.isPrefixOf` x = Just (UnixVersion SuSE [11,1])
               | "sles11" `T.isPrefixOf` x = Just (UnixVersion SuSE [11])
+              | "Fedora release 31 " `T.isPrefixOf` x = Just (UnixVersion Fedora [31])
               | otherwise =   (T.stripPrefix "Red Hat Linux release " x >>= parseVersion RedHatLinux)
                           <|> (T.stripPrefix "Red Hat Enterprise Linux ES release " x >>= parseVersion RHEL)
                           <|> (T.stripPrefix "Red Hat Enterprise Linux " x >>= parseVersion RHEL)

@@ -23,6 +23,7 @@ data UnixType = RHEL
               | Unk T.Text
               | WindowsClient T.Text
               | WindowsServer T.Text
+              | Fedora
               deriving (Eq, Ord, Show, Generic)
 
 instance Printable UnixType where
