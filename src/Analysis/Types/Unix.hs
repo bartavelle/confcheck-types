@@ -24,6 +24,7 @@ data UnixType = RHEL
               | WindowsClient T.Text
               | WindowsServer T.Text
               | Fedora
+              | OpenSUSELeap
               deriving (Eq, Ord, Show, Generic)
 
 instance Printable UnixType where

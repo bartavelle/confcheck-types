@@ -97,9 +97,15 @@ str2version x | "sles10-sp4" `T.isPrefixOf` x = Just (UnixVersion SuSE [10,4])
                           <|> (T.stripPrefix "openSUSE " x >>= parseVersion OpenSuSE)
                           <|> (T.stripPrefix "CentOS release " x >>= parseVersion RHEL)
                           <|> (T.stripPrefix "CentOS Linux release " x >>= parseVersion RHEL)
+                          <|> (T.stripPrefix "openSUSE Leap " x >>= parseVersion OpenSUSELeap)
     where
         parseVersion c = either (const Nothing) (Just . UnixVersion c)
                             . A.parseOnly (A.decimal `A.sepBy1` A.char '.')
+
+lsbCmd :: T.Text -> UnixVersion
+lsbCmd l = case T.strip <$> (mapMaybe (T.stripPrefix "Description:") (T.lines l) ^? _head) of
+             Nothing -> UnixVersion (Unk "Can't find description in lsb") []
+             Just desc -> fromMaybe (UnixVersion (Unk desc) []) (str2version desc)
 
 unixVersion :: Analyzer UnixVersion
 unixVersion =   (redhat  <$> requireTxt ["conf/etc.tar.gz", "etc/redhat-release"])
@@ -108,6 +114,7 @@ unixVersion =   (redhat  <$> requireTxt ["conf/etc.tar.gz", "etc/redhat-release"
             <|> (lsb     <$> requireTxt ["conf/etc.tar.gz", "etc/lsb-release"])
             <|> (debian  <$> requireTxt ["conf/etc.tar.gz", "etc/debian_version"])
             <|> (solaris <$> requireTxt ["conf/etc.tar.gz", "/etc/passwd"])
+            <|> (lsbCmd  <$> requireTxt ["conf/lsb_release-a.txt"])
     where
         debian c = UnixVersion Debian (fromMaybe [] (numericalVersion <|> textVersion))
           where
