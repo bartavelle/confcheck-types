@@ -33,6 +33,7 @@ main = putStrLn $ unlines
         , DefineElm (Proxy :: Proxy WinGroup)
         , DefineElm (Proxy :: Proxy RPMVersion)
         , DefineElm (Proxy :: Proxy WinUser)
+        , DefineElm (Proxy :: Proxy WindowsService)
         , DefineElm (Proxy :: Proxy PasswdEntry)
         , DefineElm (Proxy :: Proxy ShadowEntry)
         , DefineElm (Proxy :: Proxy GroupEntry)

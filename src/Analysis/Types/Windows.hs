@@ -110,6 +110,15 @@ data WinLogonInfo = WinLogonInfo { _wliSID         :: SID
                                  , _wliLastLogon   :: Y.UTCTime
                                  } deriving (Show, Eq, Generic)
 
+data WindowsService
+    = WindowsService
+    { _winsrvName    :: Text
+    , _winsrvRunning :: Bool
+    , _winsrvAutorun :: Bool
+    , _winsrvUser    :: Text
+    , _winsrvCmd     :: Text
+    } deriving (Show, Eq, Generic)
+
 $(deriveBoth ((defaultOptionsDropLower 4) { constructorTagModifier = drop 4 }) ''RegistryHive)
 $(deriveBoth ((defaultOptionsDropLower 2) { constructorTagModifier = drop 2 }) ''RegistryValue)
 $(deriveBoth ((defaultOptionsDropLower 4) { constructorTagModifier = drop 4 }) ''UserAccountControlFlag)
@@ -117,4 +126,5 @@ $(deriveBoth (defaultOptionsDropLower 4) ''RegistryKey)
 $(deriveBoth (defaultOptionsDropLower 4) ''WinLogonInfo)
 $(deriveBoth (defaultOptionsDropLower 9) ''WinGroup)
 $(deriveBoth (defaultOptionsDropLower 4) ''WinUser)
+$(deriveBoth (defaultOptionsDropLower 7) ''WindowsService)
 makeLenses ''WinUser

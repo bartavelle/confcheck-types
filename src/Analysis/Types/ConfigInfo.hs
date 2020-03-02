@@ -54,6 +54,7 @@ data ConfigInfo = ConfPass        PasswdEntry
                 | AuditStart      Y.UTCTime
                 | AuditEnd        Y.UTCTime
                 | WinRegistry     RegistryKey
+                | WinService      WindowsService
                 deriving (Show, Eq, Generic)
 
 parseToConfigInfo :: T.Text -> (a -> ConfigInfo) -> [Either String a] -> Seq.Seq ConfigInfo
