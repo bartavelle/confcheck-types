@@ -34,11 +34,13 @@ instance Alternative Parser where
     {-# INLINE (<|>) #-}
 
 instance Monad Parser where
-    fail _ = Parser $ \_ failure _ -> failure
     m >>= k = Parser $ \input failure success ->
         let succ' input' a = runParser (k a) input' failure success
         in  runParser m input failure succ'
     {-# INLINE (>>=) #-}
+
+instance MonadFail Parser where
+    fail _ = Parser $ \_ failure _ -> failure
 
 instance P.Parsing Parser where
     try = id
