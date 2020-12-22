@@ -2,6 +2,7 @@
 {-# LANGUAGE FlexibleInstances          #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE MultiParamTypeClasses      #-}
+{-# LANGUAGE StrictData                 #-}
 {-# LANGUAGE TemplateHaskell            #-}
 {-# LANGUAGE TupleSections              #-}
 {-# LANGUAGE TypeFamilies               #-}
@@ -20,8 +21,8 @@ import           Control.Lens
 import           Data.Aeson                   hiding (defaultOptions)
 import           Data.Aeson.Types             (Parser)
 import           Data.Char                    (toLower)
+import           Data.Containers.ListUtils    (nubOrd)
 import qualified Data.HashMap.Strict          as HM
-import           Data.List                    (nub)
 import qualified Data.Map.Strict              as M
 import qualified Data.Set                     as S
 import           Data.Text                    (Text)
@@ -40,7 +41,7 @@ data PackageUniqInfo = PackageUniqInfo { _pckSeverity :: Severity
                                        deriving Show
 
 instance Semigroup PackageUniqInfo where
-    PackageUniqInfo s1 d1 pv1 p1 t1 <> PackageUniqInfo s2 d2 pv2 p2 t2 = PackageUniqInfo (max s1 s2) (min d1 d2) (max pv1 pv2) (nub (p1 ++ p2)) (nub (t1 ++ t2))
+    PackageUniqInfo s1 d1 pv1 p1 t1 <> PackageUniqInfo s2 d2 pv2 p2 t2 = PackageUniqInfo (max s1 s2) (min d1 d2) (max pv1 pv2) (nubOrd (p1 ++ p2)) (nubOrd (t1 ++ t2))
 
 instance Monoid PackageUniqInfo where
     mempty = PackageUniqInfo Unknown (fromGregorian 1970 1 1) "" [] []
