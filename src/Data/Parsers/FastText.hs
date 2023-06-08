@@ -1,6 +1,7 @@
 {-# LANGUAGE BangPatterns #-}
 {-# LANGUAGE DeriveFunctor #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE ImportQualifiedPost #-}
 {-# LANGUAGE RankNTypes #-}
 
 module Data.Parsers.FastText where
@@ -10,11 +11,11 @@ import Control.Lens
 import Data.AffineSpace ((.-^))
 import Data.Char
 import Data.Text (Text)
-import qualified Data.Text as T
+import Data.Text qualified as T
 import Data.Thyme
-import qualified Text.Parser.Char as P
-import qualified Text.Parser.Combinators as P
-import qualified Text.Parser.Token as P
+import Text.Parser.Char qualified as P
+import Text.Parser.Combinators qualified as P
+import Text.Parser.Token qualified as P
 
 newtype Parser a = Parser {runParser :: forall r. Text -> r -> (Text -> a -> r) -> r}
   deriving (Functor)
@@ -130,7 +131,7 @@ timestamp :: Parser UTCTime
 timestamp = do
   !day <- parseYMD <* char '+'
   !difftime <- parseDTime <* char '+'
-  let !tm = UTCTime day difftime ^. from utcTime
+  let !tm = UTCView day difftime ^. from utcTime
   !tz <- takeWhile1 isUpper
   return $! case tz of
     "CEST" -> tm .-^ fromSeconds (7200 :: Int)
@@ -139,7 +140,7 @@ timestamp = do
 
 parseTimestamp :: Text -> Maybe UTCTime
 parseTimestamp txt
-  | "%++" `T.isPrefixOf` txt = Just $ view (from utcTime) $ UTCTime (YearMonthDay 2016 03 12 ^. from gregorian) (fromSeconds (0 :: Int))
+  | "%++" `T.isPrefixOf` txt = Just $ view (from utcTime) $ UTCView (YearMonthDay 2016 03 12 ^. from gregorian) (fromSeconds (0 :: Int))
   | otherwise = parseOnly timestamp txt
 
 pFold :: Parser a -> Fold Text a

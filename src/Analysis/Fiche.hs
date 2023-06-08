@@ -1,6 +1,7 @@
 {-# LANGUAGE DeriveTraversable #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE ImportQualifiedPost #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE StrictData #-}
 {-# LANGUAGE TemplateHaskell #-}
@@ -15,31 +16,27 @@ import Analysis.Types.Package
 import Analysis.Types.Unix
 import Analysis.Types.UnixUsers
 import Analysis.Types.Vulnerability
-import Analysis.Types.Windows
-import Control.Arrow ((***))
 import Control.Lens
 import Data.Aeson hiding (defaultOptions)
 import Data.Aeson.Types (Parser)
 import Data.Char (toLower)
 import Data.Containers.ListUtils (nubOrd)
-import qualified Data.HashMap.Strict as HM
-import qualified Data.Map.Strict as M
-import qualified Data.Set as S
+import Data.Map.Strict qualified as M
+import Data.Set qualified as S
 import Data.Text (Text)
-import qualified Data.Text as T
+import Data.Text qualified as T
 import Data.Textual
 import Data.Time (Day (..), fromGregorian)
 import Data.Word (Word16)
 import Elm.Derive
 
-data PackageUniqInfo
-  = PackageUniqInfo
-      { _pckSeverity :: Severity,
-        _pckDay :: Day,
-        _pckVersion :: RPMVersion,
-        _pckDesc :: [T.Text],
-        _pckPatches :: [(Day, RPMVersion, Severity, T.Text)]
-      }
+data PackageUniqInfo = PackageUniqInfo
+  { _pckSeverity :: Severity,
+    _pckDay :: Day,
+    _pckVersion :: RPMVersion,
+    _pckDesc :: [T.Text],
+    _pckPatches :: [(Day, RPMVersion, Severity, T.Text)]
+  }
   deriving (Show)
 
 instance Semigroup PackageUniqInfo where
@@ -50,6 +47,8 @@ instance Monoid PackageUniqInfo where
 
 newtype JMap a b = JMap {getJMap :: M.Map a b}
   deriving (Show, Eq, Ord, Functor, Foldable, Traversable)
+
+makeWrapped ''JMap
 
 instance Ord k => TraverseMin k (JMap k) where
   traverseMin f (JMap x) = JMap <$> traverseMin f x
@@ -86,13 +85,11 @@ instance (Ord k, Monoid a) => Monoid (JMap k a) where
 parseTextual :: Textual a => Text -> Parser a
 parseTextual = maybe (fail "cannot decode") return . fromText
 
-instance (Textual a, FromJSON b, Ord a) => FromJSON (JMap a b) where
-  parseJSON = withObject "JMap" $ \o -> do
-    t <- traverse (\(k, v) -> (,) <$> parseTextual k <*> parseJSON v) (HM.toList o)
-    return (JMap (M.fromList t))
+instance (FromJSONKey a, FromJSON b, Ord a) => FromJSON (JMap a b) where
+  parseJSON = fmap JMap . parseJSON
 
-instance (Textual a, ToJSON b, Ord a) => ToJSON (JMap a b) where
-  toJSON (JMap mp) = object $ map (toText *** toJSON) (M.toList mp)
+instance (ToJSONKey a, ToJSON b, Ord a) => ToJSON (JMap a b) where
+  toJSON (JMap mp) = toJSON mp
 
 data Deadline
   = NoDeadLine
@@ -103,49 +100,49 @@ data Deadline
 newtype AppUser = AppUser {_auName :: Text}
   deriving (Show, FromJSON, ToJSON)
 
-data AppServer
-  = AppServer
-      { _apsListenOn :: [Text],
-        _apsPort :: Word16,
-        _apsFiltered :: Bool,
-        _apsClients :: [Text]
-      }
+data AppServer = AppServer
+  { _apsListenOn :: [Text],
+    _apsPort :: Word16,
+    _apsFiltered :: Bool,
+    _apsClients :: [Text]
+  }
   deriving (Show)
 
-data AppClient
-  = AppClient
-      { _apcConnectTo :: [Text],
-        _apcPort :: Word16
-      }
+data AppClient = AppClient
+  { _apcConnectTo :: [Text],
+    _apcPort :: Word16
+  }
   deriving (Show)
 
-data FicheApplication
-  = FicheApplication
-      { _appName :: Text,
-        _appIdentity :: [Text],
-        _appServer :: [AppServer],
-        _appClient :: [AppClient]
-      }
+data FicheApplication = FicheApplication
+  { _appName :: Text,
+    _appIdentity :: [Text],
+    _appServer :: [AppServer],
+    _appClient :: [AppClient]
+  }
   deriving (Show)
 
-data FicheInfo
-  = FicheInfo
-      { _ficheOS :: UnixVersion,
-        _ficheProblems :: [CError],
-        _fichePackages :: [(Day, Severity, Text, Text, Text)], -- (update date, severity, package description, installed version, patch version)
-        _ficheUsers :: ([UnixUser], [UnixUser], [WinUser], [WinUser], M.Map Text [AppUser]), -- (privilégiés, autres){lin,win}, applicatifs
-        _ficheFSProblems :: [(Severity, FileVuln)],
-        _ficheAnnuaire :: Maybe Text,
-        _fichePkgVulns :: JMap RPMVersion PackageUniqInfo,
-        _ficheIfaces :: [(Text, Text, Maybe MAC, Maybe Text)],
-        _ficheOldestMissingPatch :: Maybe Day,
-        _ficheAllVulns :: [Vulnerability],
-        _ficheApplications :: [FicheApplication],
-        _ficheHostname :: Maybe Text
-      }
+data FicheInfo = FicheInfo
+  { _ficheOS :: UnixVersion,
+    _ficheProblems :: [CError],
+    _fichePackages :: [(Day, Severity, Text, Text, Text)], -- (update date, severity, package description, installed version, patch version)
+    _ficheUsers :: ([UnixUser], [UnixUser], M.Map Text [AppUser]), -- (privilégiés, autres){lin,win}, applicatifs
+    _ficheFSProblems :: [(Severity, FileVuln)],
+    _ficheAnnuaire :: Maybe Text,
+    _fichePkgVulns :: JMap RPMVersion PackageUniqInfo,
+    _ficheIfaces :: [(Text, Text, Maybe MAC, Maybe Text)],
+    _ficheOldestMissingPatch :: Maybe Day,
+    _ficheAllVulns :: [Vulnerability],
+    _ficheApplications :: [FicheApplication],
+    _ficheHostname :: Maybe Text
+  }
   deriving (Show)
 
-$(deriveBoth defaultOptions {fieldLabelModifier = map toLower . drop 6} ''FicheInfo)
+makeLenses ''PackageUniqInfo
+
+makeLenses ''FicheApplication
+
+makeLenses ''FicheInfo
 
 $(deriveBoth defaultOptions {fieldLabelModifier = map toLower . drop 4} ''AppServer)
 
@@ -155,13 +152,7 @@ $(deriveBoth defaultOptions {fieldLabelModifier = map toLower . drop 4} ''FicheA
 
 $(deriveBoth defaultOptions {fieldLabelModifier = map toLower . drop 4} ''PackageUniqInfo)
 
-makeWrapped ''JMap
-
-makeLenses ''PackageUniqInfo
-
-makeLenses ''FicheApplication
-
-makeLenses ''FicheInfo
+$(deriveBoth defaultOptions {fieldLabelModifier = map toLower . drop 6} ''FicheInfo)
 
 knownUsers :: S.Set T.Text
 knownUsers =

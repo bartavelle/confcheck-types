@@ -1,4 +1,5 @@
 {-# LANGUAGE GADTs #-}
+{-# LANGUAGE ImportQualifiedPost #-}
 {-# LANGUAGE LambdaCase #-}
 
 module Data.Parsers.Xml
@@ -32,15 +33,15 @@ module Data.Parsers.Xml
   )
 where
 
-import qualified ByteString.Parser.Fast as PF
+import ByteString.Parser.Fast qualified as PF
 import Control.Applicative
 import Control.Monad.Identity
-import qualified Data.ByteString.Lazy as BSL
-import qualified Data.HashMap.Strict as HM
-import qualified Data.Text as T
-import qualified Data.Text.Encoding as T
-import qualified Text.Parsec.Pos as P
-import qualified Text.Parsec.Prim as P
+import Data.ByteString.Lazy qualified as BSL
+import Data.HashMap.Strict qualified as HM
+import Data.Text qualified as T
+import Data.Text.Encoding qualified as T
+import Text.Parsec.Pos qualified as P
+import Text.Parsec.Prim qualified as P
 import Text.Parsec.String ()
 import Text.XML.Expat.SAX as S
 import Prelude

@@ -1,4 +1,5 @@
 {-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE ImportQualifiedPost #-}
 {-# LANGUAGE StrictData #-}
 {-# LANGUAGE TemplateHaskell #-}
 
@@ -7,17 +8,17 @@ module Analysis.Types.Package where
 import Control.Applicative
 import Control.Lens
 import Data.Aeson
-import Data.Aeson.Types (typeMismatch)
+import Data.Aeson.Types (toJSONKeyText, typeMismatch)
 import Data.Char (isAlpha, isDigit)
-import qualified Data.Serialize as S
+import Data.Serialize qualified as S
 import Data.String
 import Data.Text (Text)
-import qualified Data.Text as T
+import Data.Text qualified as T
 import Data.Textual
 import Elm.Derive
 import GHC.Generics (Generic)
-import qualified Text.Parser.Char as PC
-import qualified Text.Printer as P
+import Text.Parser.Char qualified as PC
+import Text.Printer qualified as P
 
 data VersionChunk
   = VNum Int
@@ -41,11 +42,10 @@ instance Ord VersionChunk where
   compare (VLetter _) (VNum _) = LT
   compare (VNum _) (VLetter _) = GT
 
-data RPMVersion
-  = RPMVersion
-      { getRPMVersion :: [VersionChunk],
-        getRPMString :: String
-      }
+data RPMVersion = RPMVersion
+  { getRPMVersion :: [VersionChunk],
+    getRPMString :: String
+  }
   deriving (Show, Eq, Ord, Generic)
 
 instance S.Serialize RPMVersion
@@ -89,23 +89,19 @@ data PType
   | PSolaris
   | PUnk
   | PDeb Text (Maybe Text) -- source, source version
-  | WindowsDLL
-  | WindowsInstall
   deriving (Show, Eq, Ord, Generic)
 
-data SoftwarePackage
-  = Package
-      { _packageName :: Text,
-        _packageVersion :: Text,
-        _packageType :: PType
-      }
+data SoftwarePackage = Package
+  { _packageName :: Text,
+    _packageVersion :: Text,
+    _packageType :: PType
+  }
   deriving (Show, Eq, Ord, Generic)
 
-data SolarisPatch
-  = SolarisPatch
-      { _solPatchId :: Int,
-        _solPatchRev :: Int
-      }
+data SolarisPatch = SolarisPatch
+  { _solPatchId :: Int,
+    _solPatchRev :: Int
+  }
   deriving (Show, Eq, Ord, Generic)
 
 makeLenses ''SolarisPatch
@@ -119,3 +115,9 @@ $(deriveBoth (defaultOptionsDropLower 8) ''SoftwarePackage)
 $(deriveBoth (defaultOptionsDropLower 9) ''SolarisPatch)
 
 makeLenses ''SoftwarePackage
+
+instance ToJSONKey RPMVersion where
+  toJSONKey = toJSONKeyText descRPMVersion
+
+instance FromJSONKey RPMVersion where
+  fromJSONKey = FromJSONKeyText (parseRPMVersion . T.unpack)

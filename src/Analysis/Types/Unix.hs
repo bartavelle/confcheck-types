@@ -23,8 +23,6 @@ data UnixType
   | Debian
   | Ubuntu
   | Unk T.Text
-  | WindowsClient T.Text
-  | WindowsServer T.Text
   | Fedora
   | OpenSUSELeap
   deriving (Eq, Ord, Show, Generic)

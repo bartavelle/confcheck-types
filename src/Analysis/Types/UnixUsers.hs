@@ -79,12 +79,12 @@ makeLenses ''ShadowEntry
 
 makePrisms ''ShadowHash
 
-$(deriveBoth (defaultOptionsDropLower 3) ''UnixUser)
-
 $(deriveBoth (defaultOptionsDropLower 4) ''PasswdEntry)
+
+$(deriveBoth (defaultOptionsDropLower 0) ''ShadowHash)
 
 $(deriveBoth (defaultOptionsDropLower 7) ''ShadowEntry)
 
 $(deriveBoth (defaultOptionsDropLower 6) ''GroupEntry)
 
-$(deriveBoth (defaultOptionsDropLower 0) ''ShadowHash)
+$(deriveBoth (defaultOptionsDropLower 3) ''UnixUser)

@@ -27,6 +27,6 @@ data CronEntry
       }
   deriving (Show, Eq, Generic)
 
-$(deriveBoth (defaultOptionsDropLower 5) ''CronEntry)
-
 $(deriveBoth (defaultOptionsDropLower 0) ''CronSchedule)
+
+$(deriveBoth (defaultOptionsDropLower 5) ''CronEntry)

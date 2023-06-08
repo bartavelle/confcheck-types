@@ -22,10 +22,6 @@ import Network.IP.Addr
 data AuditFileType
   = AuditTar
   | AuditTarGz
-  | MBSAReport
-  | WinVBSReport
-  | MissingKBs
-  | WinAuditTool
   deriving (Eq, Ord, Enum, Generic, Show)
 
 -- orphan instances and other hacks :(

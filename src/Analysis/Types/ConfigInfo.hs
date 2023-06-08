@@ -13,7 +13,6 @@ import Analysis.Types.Rhost
 import Analysis.Types.Sudo
 import Analysis.Types.Unix
 import Analysis.Types.UnixUsers
-import Analysis.Types.Windows
 import Control.Lens
 import qualified Data.ByteString as BS
 import Data.Condition
@@ -37,9 +36,6 @@ data ConfigInfo
   | ConfigError CError
   | Hostname Text
   | ConfUnixUser UnixUser
-  | ConfWinUser WinUser
-  | ConfWinGroup WinGroup
-  | ConfWinLoginfo WinLogonInfo
   | ConfUnixFile BS.ByteString
   | ConfUnixFileNG BS.ByteString
   | BrokenLink UnixFile
@@ -55,8 +51,6 @@ data ConfigInfo
   | ValidShells (S.Set Text)
   | AuditStart Y.UTCTime
   | AuditEnd Y.UTCTime
-  | WinRegistry RegistryKey
-  | WinService WindowsService
   deriving (Show, Eq, Generic)
 
 parseToConfigInfo :: T.Text -> (a -> ConfigInfo) -> [Either String a] -> Seq.Seq ConfigInfo

@@ -11,9 +11,6 @@ module Analysis.Types
     module Analysis.Types.Unix,
     module Analysis.Types.UnixUsers,
     module Analysis.Types.Vulnerability,
-    module Analysis.Types.Windows,
-    module Analysis.Windows.ACE,
-    module Analysis.Windows.SID,
   )
 where
 
@@ -29,6 +26,3 @@ import Analysis.Types.Sudo
 import Analysis.Types.Unix
 import Analysis.Types.UnixUsers
 import Analysis.Types.Vulnerability
-import Analysis.Types.Windows
-import Analysis.Windows.ACE
-import Analysis.Windows.SID
