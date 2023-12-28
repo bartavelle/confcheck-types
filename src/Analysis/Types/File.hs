@@ -48,6 +48,9 @@ data UnixFileGen usertpe pathtype
       }
   deriving (Show, Eq, Generic)
 
+instance Functor (UnixFileGen usertpe) where
+  fmap f (UnixFileGen i h a m c u gr b t p s pat tgt) = UnixFileGen i h a m c u gr b t p s (f pat) (fmap f tgt)
+
 instance Bifunctor UnixFileGen where
   bimap f g (UnixFileGen i h a m c u gr b t p s pat tgt) = UnixFileGen i h a m c (f u) (f gr) b t p s (g pat) (fmap g tgt)
 

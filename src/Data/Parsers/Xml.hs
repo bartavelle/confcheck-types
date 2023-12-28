@@ -35,6 +35,7 @@ where
 
 import ByteString.Parser.Fast qualified as PF
 import Control.Applicative
+import Control.Monad (unless)
 import Control.Monad.Identity
 import Data.ByteString.Lazy qualified as BSL
 import Data.HashMap.Strict qualified as HM

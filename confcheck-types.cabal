@@ -39,7 +39,7 @@ library
     Data.Parsers.FastText
     Data.Parsers.Atto
     Data.Parsers.Helpers
-  build-depends:       base >= 4.11 && < 5
+  build-depends:       base >= 4.16 && < 5
                      , attoparsec
                      , text
                      , thyme
